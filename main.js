@@ -3,6 +3,7 @@
 
     var CANCEL_EDIT_BTN_CLASS = 'cancel-editing';
     var BASE_CANCEL_EDIT_BTN_CLASSES = 'button button--neutral button--small cancel formaction';
+    var ESC_KEY = 27;
 
     var self = {
         cancelEditBtn: buildCancelEditBtn(),
@@ -12,11 +13,12 @@
     };
 
     onCommentEvent('dblclick', startEditingComment);
+    onCommentEvent('keydown', handleEscapeKey);
 
     function onCommentEvent(eventType, callback) {
         window.addEventListener(eventType, function(event) {
             var commentBody = event.target.closest('.comment-body');
-            commentBody && callback(commentBody.parentElement);
+            commentBody && callback(commentBody.parentElement, event);
         })
     }
 
@@ -79,6 +81,11 @@
         self.lastCommentItem.querySelector('.comment-delete').click();
         self.$('.axo-popup-content .button.save').click();
         stopEditingLastComment();
+    }
+
+    function handleEscapeKey(_commentItem, event) {
+        var key = event.keyCode || event.which;
+        if (key == ESC_KEY) stopEditingLastComment();
     }
 
     function toggleElm(elm, isShown) {
